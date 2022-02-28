@@ -6,7 +6,7 @@ namespace Comar.Factories;
 public interface ISerializerFactory
 {
 	/// <summary> Create internal serializer suitable for specified file </summary>
-	/// <param name="filename">Filename</param>
+	/// <param name="filepath">Path to the file</param>
 	/// <returns>Internal serializer</returns>
-	ISerializer CreateSerializer(string filename);
+	ISerializer CreateSerializer(string filepath);
 }

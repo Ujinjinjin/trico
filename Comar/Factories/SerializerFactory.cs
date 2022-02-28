@@ -7,9 +7,9 @@ namespace Comar.Factories;
 public sealed class SerializerFactory : ISerializerFactory
 {
 	/// <inheritdoc />
-	public ISerializer CreateSerializer(string filename)
+	public ISerializer CreateSerializer(string filepath)
 	{
-		var fileExtension = filename.Split('.')[^1];
+		var fileExtension = filepath.Split('.')[^1];
 
 		switch (fileExtension)
 		{
@@ -19,7 +19,7 @@ public sealed class SerializerFactory : ISerializerFactory
 			case FilenameExtension.Yml:
 				return new YamlSerializer();
 			default:
-				throw new ArgumentOutOfRangeException(filename);
+				throw new ArgumentOutOfRangeException(filepath);
 		}
 	}
 }
