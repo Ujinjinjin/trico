@@ -9,10 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Jarl.Yaml" Version="1.0.1" />
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Comar.Abstractions\Comar.Abstractions.csproj" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
 </Project>
