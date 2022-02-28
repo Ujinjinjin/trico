@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comar", "Comar\Comar.csproj", "{D3DC4E8B-A260-49E3-805C-DAC0DCD0A5CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comar.Cli", "Comar.Cli\Comar.Cli.csproj", "{44ACA179-5018-45B6-85BC-0DD28F1CB61C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comar.Tests", "Comar.Tests\Comar.Tests.csproj", "{DD047906-1110-42C4-911A-DAD758F3DA94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,9 @@ Global
 		{D3DC4E8B-A260-49E3-805C-DAC0DCD0A5CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3DC4E8B-A260-49E3-805C-DAC0DCD0A5CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3DC4E8B-A260-49E3-805C-DAC0DCD0A5CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44ACA179-5018-45B6-85BC-0DD28F1CB61C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44ACA179-5018-45B6-85BC-0DD28F1CB61C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44ACA179-5018-45B6-85BC-0DD28F1CB61C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44ACA179-5018-45B6-85BC-0DD28F1CB61C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD047906-1110-42C4-911A-DAD758F3DA94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD047906-1110-42C4-911A-DAD758F3DA94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD047906-1110-42C4-911A-DAD758F3DA94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD047906-1110-42C4-911A-DAD758F3DA94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
