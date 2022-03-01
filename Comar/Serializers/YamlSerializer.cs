@@ -1,7 +1,7 @@
 ﻿using Comar.Constants;
 using Comar.Extensions;
-using Jarl.Yaml;
-using System.Runtime.Serialization;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Comar.Serializers;
 
@@ -13,47 +13,27 @@ internal sealed class YamlSerializer : ISerializer
 	/// <inheritdoc />
 	public T? Deserialize<T>(string contents)
 	{
-		var serializer = new Jarl.Yaml.Serialization.YamlSerializer();
-		var deserializationResult = serializer.Deserialize(contents, typeof(T));
+		var serializer = new DeserializerBuilder()
+			.WithNamingConvention(HyphenatedNamingConvention.Instance)
+			.IgnoreUnmatchedProperties()
+			.Build();
 
-		if (deserializationResult.Length != 1)
-		{
-			throw new SerializationException();
-		}
-
-		return (T) deserializationResult[0];
+		return serializer.Deserialize<T>(contents);
 	}
 
 	/// <inheritdoc />
 	public string Serialize<T>(T data)
 	{
-		var config = new YamlConfig
-		{
-			DoNotUseVerbatimTag = true,
-			OmitTagForRootNode = true,
-			LineBreakForOutput = "\n"
-		};
-		var serializer = new Jarl.Yaml.Serialization.YamlSerializer(config);
+		var serializer = new SerializerBuilder()
+			.WithNamingConvention(HyphenatedNamingConvention.Instance)
+			.ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull)
+			.Build();
 
-		var dirtySerializedArray = serializer.Serialize(data)
-			.ToUnixEol()
-			.Split("\n");
-		var cleanSerializedList = new List<string>();
-
-		for (var i = 0; i < dirtySerializedArray.Length; i++)
+		if (data is null)
 		{
-			if (dirtySerializedArray[i].NotContains(": null"))
-			{
-				cleanSerializedList.Add(dirtySerializedArray[i]);
-			}
+			return string.Empty;
 		}
 
-		cleanSerializedList = cleanSerializedList.Sequence(2, ^2)
-			.OrderBy(x => x)
-			.ToList();
-
-		var serializedObject = string.Join("\n", cleanSerializedList);
-
-		return serializedObject.ToUnixEol();
+		return serializer.Serialize(data).ToUnixEol();
 	}
 }

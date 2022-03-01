@@ -1,7 +1,7 @@
 ﻿using Comar.Constants;
 using Comar.Extensions;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Comar.Serializers;
 
@@ -13,19 +13,38 @@ internal sealed class JsonSerializer : ISerializer
 	/// <inheritdoc />
 	public T? Deserialize<T>(string contents)
 	{
-		return System.Text.Json.JsonSerializer.Deserialize<T>(contents);
+		var settings = new JsonSerializerSettings
+		{
+			DefaultValueHandling = DefaultValueHandling.Populate,
+			ContractResolver = new DefaultContractResolver
+			{
+				NamingStrategy = new KebabCaseNamingStrategy
+				{
+					OverrideSpecifiedNames = false
+				}
+			},
+		};
+
+		return JsonConvert.DeserializeObject<T>(contents, settings);
 	}
 
 	/// <inheritdoc />
 	public string Serialize<T>(T data)
 	{
-		var options = new JsonSerializerOptions
+		var settings = new JsonSerializerSettings
 		{
-			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-			WriteIndented = true,
+			NullValueHandling = NullValueHandling.Ignore,
+			Formatting = Formatting.Indented,
+			ContractResolver = new DefaultContractResolver
+			{
+				NamingStrategy = new KebabCaseNamingStrategy
+				{
+					OverrideSpecifiedNames = false
+				}
+			},
 		};
 
-		var serializedObject = System.Text.Json.JsonSerializer.Serialize(data, options);
+		var serializedObject = JsonConvert.SerializeObject(data, settings);
 
 		return serializedObject.ToUnixEol();
 	}
