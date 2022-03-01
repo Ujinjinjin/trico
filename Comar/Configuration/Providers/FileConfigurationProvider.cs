@@ -1,6 +1,7 @@
 ﻿using Comar.Factories;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Comar.Configuration.Providers;
@@ -129,7 +130,24 @@ public sealed class FileConfigurationProvider : IConfigurationProvider
 		var serializer = _serializerFactory.CreateSerializer(filepath);
 
 		var fileContents = await File.ReadAllTextAsync(filepath, ct);
-		var obj = serializer.Deserialize<object>(fileContents);
+
+		object? obj;
+		try
+		{
+			obj = serializer.Deserialize<object>(fileContents);
+		}
+		catch (System.Text.Json.JsonException exception)
+		{
+			throw new FileLoadException("config file wasn't loaded correctly", exception);
+		}
+		catch (InvalidOperationException exception)
+		{
+			throw new FileLoadException("config file wasn't loaded correctly", exception);
+		}
+		catch (SerializationException exception)
+		{
+			throw new FileLoadException("config file wasn't loaded correctly", exception);
+		}
 
 		if (obj is null)
 		{
