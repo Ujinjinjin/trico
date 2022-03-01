@@ -9,6 +9,11 @@ public sealed class SerializerFactory : ISerializerFactory
 	/// <inheritdoc />
 	public ISerializer CreateSerializer(string filepath)
 	{
+		if (string.IsNullOrWhiteSpace(filepath))
+		{
+			throw new ArgumentNullException(nameof(filepath));
+		}
+		
 		var fileExtension = filepath.Split('.')[^1];
 
 		switch (fileExtension)
