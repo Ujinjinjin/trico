@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -140,5 +139,193 @@ public class FileConfigurationProviderTests
 
 		// act & assert
 		_configurationProvider.Load(options);
+	}
+
+	[Fact]
+	public async Task FileConfigurationProviderTests__DumpAsync__WhenDumpedBeforeLoading_ThenExceptionThrown()
+	{
+		// act & assert
+		await Assert.ThrowsAsync<FileLoadException>(async () => await _configurationProvider.DumpAsync(default));
+	}
+
+	[Fact]
+	public void FileConfigurationProviderTests__Dump__WhenDumpedBeforeLoading_ThenExceptionThrown()
+	{
+		// act & assert
+		Assert.Throws<FileLoadException>(() => _configurationProvider.Dump());
+	}
+
+	[Theory]
+	[InlineData("./InputData/valid-config.json")]
+	[InlineData("./InputData/valid-config.yml")]
+	[InlineData("./InputData/valid-config.yaml")]
+	public async Task FileConfigurationProviderTests__DumpAsync__WhenDumpedAfterChangingConfigs_ThenChangedConfigsLoadedNextTime(string filepath)
+	{
+		// arrange
+		var newValue = Guid.NewGuid().ToString("N");
+		var options = new Dictionary<string, string>
+		{
+			{ "config-filepath", filepath },
+		};
+
+		await _configurationProvider.LoadAsync(options, default);
+		_configurationProvider.Set("new-property", newValue);
+
+		// act
+		await _configurationProvider.DumpAsync(default);
+		_configurationProvider.Load(options);
+		
+		// assert
+		Assert.True(_configurationProvider.TryGet("new-property", out var value));
+		Assert.Equal(newValue, value);
+	}
+
+	[Theory]
+	[InlineData("./InputData/valid-config.json")]
+	[InlineData("./InputData/valid-config.yml")]
+	[InlineData("./InputData/valid-config.yaml")]
+	public void FileConfigurationProviderTests__Dump__WhenDumpedAfterChangingConfigs_ThenChangedConfigsLoadedNextTime(string filepath)
+	{
+		// arrange
+		var newValue = Guid.NewGuid().ToString("N");
+		var options = new Dictionary<string, string>
+		{
+			{ "config-filepath", filepath },
+		};
+
+		_configurationProvider.Load(options);
+		_configurationProvider.Set("new-property", newValue);
+
+		// act
+		_configurationProvider.Dump();
+		_configurationProvider.Load(options);
+		
+		// assert
+		Assert.True(_configurationProvider.TryGet("new-property", out var value));
+		Assert.Equal(newValue, value);
+	}
+
+	[Theory]
+	[InlineData("./InputData/valid-config.json")]
+	[InlineData("./InputData/valid-config.yml")]
+	[InlineData("./InputData/valid-config.yaml")]
+	public async Task FileConfigurationProviderTests__TryGet__WhenNotExistingKeyGiven_ThenConfigNotReturned(string filepath)
+	{
+		// arrange
+		var key = Guid.NewGuid().ToString("N");
+		var options = new Dictionary<string, string>
+		{
+			{ "config-filepath", filepath },
+		};
+		await _configurationProvider.LoadAsync(options, default);
+
+		// act
+		var result = _configurationProvider.TryGet(key, out var value);
+		
+		// assert
+		Assert.False(result);
+		Assert.Null(value);
+	}
+
+	[Theory]
+	[InlineData("./InputData/valid-config.json", "node.property", "value")]
+	[InlineData("./InputData/valid-config.json", "node.node.property", "value")]
+	[InlineData("./InputData/valid-config.json", "property", "value")]
+	[InlineData("./InputData/valid-config.yml", "node.property", "value")]
+	[InlineData("./InputData/valid-config.yml", "node.node.property", "value")]
+	[InlineData("./InputData/valid-config.yml", "property", "value")]
+	[InlineData("./InputData/valid-config.yaml", "node.property", "value")]
+	[InlineData("./InputData/valid-config.yaml", "node.node.property", "value")]
+	[InlineData("./InputData/valid-config.yaml", "property", "value")]
+	public async Task FileConfigurationProviderTests__TryGet__WhenExistingKeyGiven_ThenConfigReturned(
+		string filepath,
+		string key,
+		string expectedValue
+	)
+	{
+		// arrange
+		var options = new Dictionary<string, string>
+		{
+			{ "config-filepath", filepath },
+		};
+		await _configurationProvider.LoadAsync(options, default);
+
+		// act
+		var result = _configurationProvider.TryGet(key, out var actualValue);
+		
+		// assert
+		Assert.True(result);
+		Assert.NotNull(actualValue);
+		Assert.Equal(expectedValue, actualValue);
+	}
+
+	[Theory]
+	[InlineData("./InputData/valid-config.json", "node.property")]
+	[InlineData("./InputData/valid-config.json", "node.node.property")]
+	[InlineData("./InputData/valid-config.json", "property")]
+	[InlineData("./InputData/valid-config.yml", "node.property")]
+	[InlineData("./InputData/valid-config.yml", "node.node.property")]
+	[InlineData("./InputData/valid-config.yml", "property")]
+	[InlineData("./InputData/valid-config.yaml", "node.property")]
+	[InlineData("./InputData/valid-config.yaml", "node.node.property")]
+	[InlineData("./InputData/valid-config.yaml", "property")]
+	public async Task FileConfigurationProviderTests__Set__WhenExistingKeyGiven_ThenValueUpdated(
+		string filepath,
+		string key
+	)
+	{
+		// arrange
+		var options = new Dictionary<string, string>
+		{
+			{ "config-filepath", filepath },
+		};
+		var value = Guid.NewGuid().ToString("N");
+		await _configurationProvider.LoadAsync(options, default);
+
+		// act
+		var oldResult = _configurationProvider.TryGet(key, out var oldValue);
+		_configurationProvider.Set(key, value);
+		var newResult = _configurationProvider.TryGet(key, out var newValue);
+		
+		// assert
+		Assert.True(oldResult);
+		Assert.True(newResult);
+		Assert.NotNull(oldValue);
+		Assert.NotNull(newValue);
+		
+		Assert.NotEqual(oldValue, newValue);
+		Assert.Equal(value, newValue);
+	}
+
+	[Theory]
+	[InlineData("./InputData/valid-config.json")]
+	[InlineData("./InputData/valid-config.yml")]
+	[InlineData("./InputData/valid-config.yaml")]
+	public async Task FileConfigurationProviderTests__Set__WhenNotExistingKeyGiven_ThenValueCreated(
+		string filepath
+	)
+	{
+		// arrange
+		var options = new Dictionary<string, string>
+		{
+			{ "config-filepath", filepath },
+		};
+		var key = Guid.NewGuid().ToString("N");
+		var value = Guid.NewGuid().ToString("N");
+		await _configurationProvider.LoadAsync(options, default);
+
+		// act
+		var oldResult = _configurationProvider.TryGet(key, out var oldValue);
+		_configurationProvider.Set(key, value);
+		var newResult = _configurationProvider.TryGet(key, out var newValue);
+		
+		// assert
+		Assert.False(oldResult);
+		Assert.True(newResult);
+		Assert.Null(oldValue);
+		Assert.NotNull(newValue);
+		
+		Assert.NotEqual(oldValue, newValue);
+		Assert.Equal(value, newValue);
 	}
 }
