@@ -7,7 +7,7 @@ using YamlDotNet.Core;
 
 namespace Comar.Configuration.Providers;
 
-/// <summary>  </summary>
+/// <summary> Long-term configuration provider storing options in a file </summary>
 public sealed class FileConfigurationProvider : IConfigurationProvider
 {
 	private readonly ISerializerFactory _serializerFactory;
