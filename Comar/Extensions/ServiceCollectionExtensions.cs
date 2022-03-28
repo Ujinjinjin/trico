@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
 	{
 		sc.AddScoped<ISerializerFactory, SerializerFactory>();
 		sc.AddScoped<IConfigurationBuilder, ConfigurationBuilder>();
+		sc.AddScoped<IConfiguration, ConfigurationProxy>();
 
 		return sc;
 	}

@@ -1,7 +1,7 @@
 ﻿namespace Comar.Configuration;
 
 /// <inheritdoc />
-internal class Configuration : IConfiguration
+internal sealed class Configuration : IConfiguration
 {
 	private readonly IReadOnlyList<IConfigurationProvider> _providers;
 

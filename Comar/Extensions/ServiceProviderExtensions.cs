@@ -3,8 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Comar.Extensions;
 
+/// <summary> Service provider extensions </summary>
 public static class ServiceProviderExtensions
 {
+	/// <summary> Configure configuration builder and use configuration </summary>
+	/// <param name="sp">Service provider containing configuration builder and providers</param>
+	/// <returns>Original service provider</returns>
+	/// <exception cref="NullReferenceException">Throws an exception if configuration builder was not registered</exception>
 	public static IServiceProvider UseConfiguration(
 		this IServiceProvider sp
 	)
