@@ -1,14 +1,14 @@
 ﻿namespace Comar.Configuration;
 
-/// <summary>  </summary>
+/// <summary> Configuration builder </summary>
 public interface IConfigurationBuilder
 {
-	/// <summary>  </summary>
-	/// <param name="provider"></param>
-	/// <returns></returns>
+	/// <summary> Add provider to the list </summary>
+	/// <param name="provider">Configuration provider</param>
+	/// <returns>Current configuration builder</returns>
 	IConfigurationBuilder AddProvider(IConfigurationProvider provider);
 
-	/// <summary>  </summary>
-	/// <returns></returns>
+	/// <summary> Build configuration object with all registered providers </summary>
+	/// <returns>Configuration object</returns>
 	IConfiguration Build();
 }

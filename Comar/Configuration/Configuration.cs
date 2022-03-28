@@ -35,9 +35,9 @@ internal class Configuration : IConfiguration
 		}
 	}
 
-	/// <summary>  </summary>
-	/// <param name="key"></param>
-	/// <returns></returns>
+	/// <summary> Get configuration by key from the first available provider containing given key </summary>
+	/// <param name="key">Key to access configuration</param>
+	/// <returns>Configuration value</returns>
 	private string? GetConfiguration(string key)
 	{
 		foreach (var provider in _providers)
@@ -51,9 +51,9 @@ internal class Configuration : IConfiguration
 		return default;
 	}
 
-	/// <summary>  </summary>
-	/// <param name="key"></param>
-	/// <param name="value"></param>
+	/// <summary> Set configuration value by given key in all providers </summary>
+	/// <param name="key">Key to update configuration</param>
+	/// <param name="value">Value to set</param>
 	private void SetConfiguration(string key, string? value)
 	{
 		foreach (var provider in _providers)
