@@ -6,7 +6,7 @@ namespace Comar.Configuration.Providers;
 internal sealed class InMemoryConfigurationProvider : IConfigurationProvider
 {
 	private readonly IDictionary<string, string?> _options;
-	
+
 	public InMemoryConfigurationProvider(IDictionary<string, string?>? options)
 	{
 		_options = options ?? new ConcurrentDictionary<string, string?>();
@@ -15,6 +15,8 @@ internal sealed class InMemoryConfigurationProvider : IConfigurationProvider
 	/// <inheritdoc />
 	public void Dispose()
 	{
+		((IConfigurationProvider)this).Dump();
+		_options.Clear();
 	}
 
 	/// <inheritdoc />
