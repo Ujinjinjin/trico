@@ -10,4 +10,9 @@ public interface IConfiguration : IDisposable
 	/// <summary> Load configuration from providers </summary>
 	/// <param name="options">Options that must be passed to configuration providers</param>
 	void Load(IDictionary<string, string> options);
+
+	/// <summary> Load configuration from providers </summary>
+	/// <param name="options">Options that must be passed to configuration providers</param>
+	/// <param name="ct">Cancellation token</param>
+	Task LoadAsync(IDictionary<string, string> options, CancellationToken ct);
 }

@@ -39,4 +39,10 @@ internal sealed class ConfigurationProxy : IConfiguration
 	{
 		Configuration.Load(options);
 	}
+
+	/// <inheritdoc />
+	public async Task LoadAsync(IDictionary<string, string> options, CancellationToken ct)
+	{
+		await Configuration.LoadAsync(options, ct);
+	}
 }
