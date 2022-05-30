@@ -174,7 +174,7 @@ public class FileConfigurationProviderTests
 		// act
 		await _configurationProvider.DumpAsync(default);
 		_configurationProvider.Load(options);
-		
+
 		// assert
 		Assert.True(_configurationProvider.TryGet("new-property", out var value));
 		Assert.Equal(newValue, value);
@@ -199,7 +199,7 @@ public class FileConfigurationProviderTests
 		// act
 		_configurationProvider.Dump();
 		_configurationProvider.Load(options);
-		
+
 		// assert
 		Assert.True(_configurationProvider.TryGet("new-property", out var value));
 		Assert.Equal(newValue, value);
@@ -221,7 +221,7 @@ public class FileConfigurationProviderTests
 
 		// act
 		var result = _configurationProvider.TryGet(key, out var value);
-		
+
 		// assert
 		Assert.False(result);
 		Assert.Null(value);
@@ -252,7 +252,7 @@ public class FileConfigurationProviderTests
 
 		// act
 		var result = _configurationProvider.TryGet(key, out var actualValue);
-		
+
 		// assert
 		Assert.True(result);
 		Assert.NotNull(actualValue);
@@ -286,13 +286,13 @@ public class FileConfigurationProviderTests
 		var oldResult = _configurationProvider.TryGet(key, out var oldValue);
 		_configurationProvider.Set(key, value);
 		var newResult = _configurationProvider.TryGet(key, out var newValue);
-		
+
 		// assert
 		Assert.True(oldResult);
 		Assert.True(newResult);
 		Assert.NotNull(oldValue);
 		Assert.NotNull(newValue);
-		
+
 		Assert.NotEqual(oldValue, newValue);
 		Assert.Equal(value, newValue);
 	}
@@ -318,13 +318,13 @@ public class FileConfigurationProviderTests
 		var oldResult = _configurationProvider.TryGet(key, out var oldValue);
 		_configurationProvider.Set(key, value);
 		var newResult = _configurationProvider.TryGet(key, out var newValue);
-		
+
 		// assert
 		Assert.False(oldResult);
 		Assert.True(newResult);
 		Assert.Null(oldValue);
 		Assert.NotNull(newValue);
-		
+
 		Assert.NotEqual(oldValue, newValue);
 		Assert.Equal(value, newValue);
 	}

@@ -1,4 +1,4 @@
-using Comar.Configuration;
+﻿using Comar.Configuration;
 using Comar.Configuration.Providers;
 using Comar.Factories;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +9,7 @@ namespace Comar.Extensions;
 public static class ServiceCollectionExtensions
 {
 	/// <summary> Register configuration dependencies </summary>
-	/// <param name="sc">Service collection where configurations dependencies will be registered </param>
+	/// <param name="sc">Service collection to which configurations dependencies will be registered </param>
 	/// <returns>Original service collection</returns>
 	public static IServiceCollection AddConfiguration(this IServiceCollection sc)
 	{
@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
 	}
 
 	/// <summary> Register file configuration provider in given service collection </summary>
-	/// <param name="sc">Service collection where provider will be added</param>
+	/// <param name="sc">Service collection to which provider will be added</param>
 	/// <returns>Original service collection</returns>
 	public static IServiceCollection AddFileProvider(this IServiceCollection sc)
 	{
@@ -41,7 +41,7 @@ public static class ServiceCollectionExtensions
 	}
 
 	/// <summary> Register in-memory configuration provider in given service collection </summary>
-	/// <param name="sc">Service collection where provider will be added</param>
+	/// <param name="sc">Service collection to which provider will be added</param>
 	/// <param name="options">Additional options that will be passed into in-memory configuration provider</param>
 	/// <returns>Original service collection</returns>
 	public static IServiceCollection AddInMemoryProvider(
