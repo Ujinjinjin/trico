@@ -1,4 +1,4 @@
-﻿using Comar.Configuration;
+using Comar.Configuration;
 using Comar.Configuration.Providers;
 using Comar.Factories;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +16,16 @@ public static class ServiceCollectionExtensions
 		sc.AddScoped<ISerializerFactory, SerializerFactory>();
 		sc.AddScoped<IConfigurationBuilder, ConfigurationBuilder>();
 		sc.AddScoped<IConfiguration, ConfigurationProxy>();
+
+		return sc;
+	}
+
+	/// <summary> Register environment variable configuration provider in given service collection </summary>
+	/// <param name="sc">Service collection to which provider will be added</param>
+	/// <returns>Original service collection</returns>
+	public static IServiceCollection AddEnvironmentVariableProvider(this IServiceCollection sc)
+	{
+		sc.AddScoped<IConfigurationProvider, EnvironmentVariableConfigurationProvider>();
 
 		return sc;
 	}

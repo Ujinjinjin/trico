@@ -15,6 +15,7 @@ public class IocModule : IIocModule
 		var collection = new ServiceCollection();
 
 		collection.AddConfiguration()
+			.AddEnvironmentVariableProvider()
 			.AddFileProvider()
 			.AddInMemoryProvider(GetDefaultConfiguration());
 
