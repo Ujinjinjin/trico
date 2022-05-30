@@ -172,7 +172,7 @@ public sealed class FileConfigurationProvider : IConfigurationProvider
 		var serializer = _serializerFactory.CreateSerializer(_filepath);
 
 		var obj = _jObj.ToObject<ExpandoObject>();
-		
+
 		var stringBuilder = new StringBuilder();
 		stringBuilder.Append(serializer.Serialize(obj));
 

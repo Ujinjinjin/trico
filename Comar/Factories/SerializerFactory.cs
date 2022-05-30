@@ -13,7 +13,7 @@ public sealed class SerializerFactory : ISerializerFactory
 		{
 			throw new ArgumentNullException(nameof(filepath));
 		}
-		
+
 		var fileExtension = filepath.Split('.')[^1];
 
 		switch (fileExtension)

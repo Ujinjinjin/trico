@@ -11,7 +11,7 @@ namespace Comar.Tests;
 public class SerializerFactoryTests
 {
 	private readonly ISerializerFactory _serializerFactory;
-	
+
 	public SerializerFactoryTests()
 	{
 		var serviceProvider = new IocModule().Build();

@@ -34,7 +34,7 @@ public class InMemoryConfigurationProviderTests
 
 		// act
 		var result = _configurationProvider.TryGet(key, out var value);
-		
+
 		// assert
 		Assert.False(result);
 		Assert.Null(value);
@@ -57,7 +57,7 @@ public class InMemoryConfigurationProviderTests
 
 		// act
 		var result = _configurationProvider.TryGet(key, out var actualValue);
-		
+
 		// assert
 		Assert.True(result);
 		Assert.NotNull(actualValue);
@@ -83,13 +83,13 @@ public class InMemoryConfigurationProviderTests
 		var oldResult = _configurationProvider.TryGet(key, out var oldValue);
 		_configurationProvider.Set(key, value);
 		var newResult = _configurationProvider.TryGet(key, out var newValue);
-		
+
 		// assert
 		Assert.True(oldResult);
 		Assert.True(newResult);
 		Assert.NotNull(oldValue);
 		Assert.NotNull(newValue);
-		
+
 		Assert.NotEqual(oldValue, newValue);
 		Assert.Equal(value, newValue);
 	}
@@ -107,13 +107,13 @@ public class InMemoryConfigurationProviderTests
 		var oldResult = _configurationProvider.TryGet(key, out var oldValue);
 		_configurationProvider.Set(key, value);
 		var newResult = _configurationProvider.TryGet(key, out var newValue);
-		
+
 		// assert
 		Assert.False(oldResult);
 		Assert.True(newResult);
 		Assert.Null(oldValue);
 		Assert.NotNull(newValue);
-		
+
 		Assert.NotEqual(oldValue, newValue);
 		Assert.Equal(value, newValue);
 	}
@@ -132,7 +132,7 @@ public class InMemoryConfigurationProviderTests
 
 		// act
 		var result = _configurationProvider.TryGet(key, out var optionValue);
-		
+
 		// assert
 		Assert.True(result);
 		Assert.NotNull(optionValue);
@@ -157,7 +157,7 @@ public class InMemoryConfigurationProviderTests
 
 		// act
 		var result = _configurationProvider.TryGet(key, out var optionValue);
-		
+
 		// assert
 		Assert.False(result);
 		Assert.Null(optionValue);
