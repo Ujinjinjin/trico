@@ -35,6 +35,15 @@ internal sealed class Configuration : IConfiguration
 		}
 	}
 
+	/// <inheritdoc />
+	public async Task LoadAsync(IDictionary<string, string> options, CancellationToken ct)
+	{
+		foreach (var provider in _providers)
+		{
+			await provider.LoadAsync(options, ct);
+		}
+	}
+
 	/// <summary> Get configuration by key from the first available provider containing given key </summary>
 	/// <param name="key">Key to access configuration</param>
 	/// <returns>Configuration value</returns>
