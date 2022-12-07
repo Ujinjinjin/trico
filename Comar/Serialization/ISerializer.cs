@@ -1,11 +1,8 @@
-﻿namespace Comar.Serializers;
+﻿namespace Comar.Serialization;
 
 /// <summary> Wrapper around serializers </summary>
 public interface ISerializer
 {
-	/// <summary> File extension associated with serializer </summary>
-	string DefaultFileExtension { get; }
-
 	/// <summary> Deserialize given string into object specified type </summary>
 	/// <param name="contents">Serialized object</param>
 	/// <typeparam name="T">Type of the data</typeparam>

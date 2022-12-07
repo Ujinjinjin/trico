@@ -1,7 +1,6 @@
 ﻿using Comar.Constants;
-using Comar.Serializers;
 
-namespace Comar.Factories;
+namespace Comar.Serialization;
 
 /// <inheritdoc />
 public sealed class SerializerFactory : ISerializerFactory

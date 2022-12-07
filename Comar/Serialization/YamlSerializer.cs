@@ -1,17 +1,14 @@
-﻿using Comar.Constants;
-using Comar.Extensions;
+﻿using Comar.Extensions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace Comar.Serializers;
+namespace Comar.Serialization;
 
 /// <summary> Wrapper around YAML serializer </summary>
 internal sealed class YamlSerializer : ISerializer
 {
-	public string DefaultFileExtension => FilenameExtension.Yml;
-
 	/// <inheritdoc />
-	public T? Deserialize<T>(string contents)
+	public T Deserialize<T>(string contents)
 	{
 		var serializer = new DeserializerBuilder()
 			.WithNamingConvention(HyphenatedNamingConvention.Instance)
