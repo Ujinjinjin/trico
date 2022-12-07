@@ -1,4 +1,4 @@
-﻿using Comar.Factories;
+﻿using Comar.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Dynamic;

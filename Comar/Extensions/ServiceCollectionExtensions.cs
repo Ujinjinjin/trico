@@ -1,6 +1,6 @@
 ﻿using Comar.Configuration;
 using Comar.Configuration.Providers;
-using Comar.Factories;
+using Comar.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Comar.Extensions;

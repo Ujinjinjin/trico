@@ -1,18 +1,33 @@
-﻿using Comar.Constants;
-using Comar.Extensions;
+﻿using Comar.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Runtime.Serialization;
 
-namespace Comar.Serializers;
+namespace Comar.Serialization;
 
 /// <summary> Wrapper around JSON serializer </summary>
 internal sealed class JsonSerializer : ISerializer
 {
-	public string DefaultFileExtension => FilenameExtension.Json;
-
 	/// <inheritdoc />
 	public T? Deserialize<T>(string contents)
 	{
+		try
+		{
+			return TryDeserialize<T>(contents);
+		}
+		catch (Exception e)
+		{
+			throw new SerializationException("Error occured during deserialization", e);
+		}
+	}
+	
+	private T? TryDeserialize<T>(string contents)
+	{
+		if (string.IsNullOrWhiteSpace(contents))
+		{
+			throw new SerializationException();
+		}
+
 		var settings = new JsonSerializerSettings
 		{
 			DefaultValueHandling = DefaultValueHandling.Populate,

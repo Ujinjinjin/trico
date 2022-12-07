@@ -1,6 +1,4 @@
-﻿using Comar.Serializers;
-
-namespace Comar.Factories;
+﻿namespace Comar.Serialization;
 
 /// <summary> Internal serializer factory </summary>
 public interface ISerializerFactory
