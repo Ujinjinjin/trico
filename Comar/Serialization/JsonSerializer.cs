@@ -1,33 +1,13 @@
-﻿using Comar.Extensions;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Runtime.Serialization;
 
 namespace Comar.Serialization;
 
 /// <summary> Wrapper around JSON serializer </summary>
-internal sealed class JsonSerializer : ISerializer
+internal sealed class JsonSerializer : SerializerBase
 {
-	/// <inheritdoc />
-	public T? Deserialize<T>(string contents)
+	protected override T? DeserializeObject<T>(string contents) where T : default
 	{
-		try
-		{
-			return TryDeserialize<T>(contents);
-		}
-		catch (Exception e)
-		{
-			throw new SerializationException("Error occured during deserialization", e);
-		}
-	}
-	
-	private T? TryDeserialize<T>(string contents)
-	{
-		if (string.IsNullOrWhiteSpace(contents))
-		{
-			throw new SerializationException();
-		}
-
 		var settings = new JsonSerializerSettings
 		{
 			DefaultValueHandling = DefaultValueHandling.Populate,
@@ -43,8 +23,7 @@ internal sealed class JsonSerializer : ISerializer
 		return JsonConvert.DeserializeObject<T>(contents, settings);
 	}
 
-	/// <inheritdoc />
-	public string Serialize<T>(T data)
+	protected override string SerializeObject<T>(T data)
 	{
 		var settings = new JsonSerializerSettings
 		{
@@ -59,8 +38,6 @@ internal sealed class JsonSerializer : ISerializer
 			},
 		};
 
-		var serializedObject = JsonConvert.SerializeObject(data, settings);
-
-		return serializedObject.ToUnixEol();
+		return JsonConvert.SerializeObject(data, settings);
 	}
 }
