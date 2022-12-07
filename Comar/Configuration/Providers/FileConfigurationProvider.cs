@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using System.Dynamic;
 using System.Runtime.Serialization;
 using System.Text;
-using YamlDotNet.Core;
 
 namespace Comar.Configuration.Providers;
 
@@ -141,15 +140,6 @@ public sealed class FileConfigurationProvider : IConfigurationProvider
 		catch (SerializationException exception)
 		{
 			throw new FileLoadException("config file wasn't loaded correctly", exception);
-		}
-		catch (SemanticErrorException exception)
-		{
-			throw new FileLoadException("config file wasn't loaded correctly", exception);
-		}
-
-		if (obj is null)
-		{
-			throw new FileLoadException("config file wasn't loaded correctly");
 		}
 
 		_jObj = JObject.FromObject(obj);
