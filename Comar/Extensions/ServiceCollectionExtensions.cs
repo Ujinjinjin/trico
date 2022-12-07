@@ -46,7 +46,7 @@ public static class ServiceCollectionExtensions
 	/// <returns>Original service collection</returns>
 	public static IServiceCollection AddInMemoryProvider(
 		this IServiceCollection sc,
-		IDictionary<string, string?>? options = default
+		IDictionary<string, string>? options = default
 	)
 	{
 		sc.AddScoped<IConfigurationProvider>(_ => new InMemoryConfigurationProvider(options));

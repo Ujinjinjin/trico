@@ -54,7 +54,7 @@ public sealed class FileConfigurationProvider : IConfigurationProvider
 	}
 
 	/// <inheritdoc />
-	public void Set(string key, string? value)
+	public void Set(string key, string value)
 	{
 		_jObj ??= new JObject();
 

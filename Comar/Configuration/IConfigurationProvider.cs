@@ -12,7 +12,7 @@ public interface IConfigurationProvider : IDisposable, IAsyncDisposable
 	/// <summary> Set configuration value by its key </summary>
 	/// <param name="key">Configuration key</param>
 	/// <param name="value">Configuration value</param>
-	void Set(string key, string? value);
+	void Set(string key, string value);
 
 	/// <summary> Load configuration </summary>
 	/// <param name="options">Options</param>
