@@ -22,9 +22,9 @@ public class IocModule : IIocModule
 		return collection.BuildServiceProvider();
 	}
 
-	private IDictionary<string, string?> GetDefaultConfiguration()
+	private IDictionary<string, string> GetDefaultConfiguration()
 	{
-		var configuration = new ConcurrentDictionary<string, string?>();
+		var configuration = new ConcurrentDictionary<string, string>();
 
 		configuration.TryAdd("property-1", "value-1");
 		configuration.TryAdd("property-2", "value-2");

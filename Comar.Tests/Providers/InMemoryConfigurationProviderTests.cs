@@ -1,42 +1,25 @@
 ﻿using Comar.Configuration;
 using Comar.Configuration.Providers;
-using Comar.Tests.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Comar.Tests.Providers;
 
-public class InMemoryConfigurationProviderTests
+public class InMemoryConfigurationProviderTests : UnitTestBase
 {
-	private readonly IConfigurationProvider _configurationProvider;
-
-	public InMemoryConfigurationProviderTests()
-	{
-		var serviceProvider = new IocModule().Build();
-
-		var configProviders = serviceProvider.GetServices<IConfigurationProvider>();
-		var configProvider = configProviders.FirstOrDefault(x => x is InMemoryConfigurationProvider);
-
-		_configurationProvider = configProvider ?? throw new ArgumentNullException($"{nameof(InMemoryConfigurationProvider)} is not registered");
-	}
-
 	[Fact]
 	public void InMemoryConfigurationProviderTests__TryGet__WhenNotExistingKeyGiven_ThenConfigNotReturned()
 	{
 		// arrange
-		var key = Guid.NewGuid().ToString("N");
-		var options = new Dictionary<string, string>();
-		// await _configurationProvider.LoadAsync(options, default);
+		var key = Fixture.Create<string>();
+		var configurationProvider = CreateConfigurationProvider();
 
 		// act
-		var result = _configurationProvider.TryGet(key, out var value);
+		var result = configurationProvider.TryGet(key, out var value);
 
 		// assert
-		Assert.False(result);
-		Assert.Null(value);
+		result.Should().BeFalse();
+		value.Should().BeNull();
 	}
 
 	[Theory]
@@ -51,16 +34,15 @@ public class InMemoryConfigurationProviderTests
 	)
 	{
 		// arrange
-		var options = new Dictionary<string, string>();
-		// await _configurationProvider.LoadAsync(options, default);
+		var configurationProvider = CreateConfigurationProvider();
 
 		// act
-		var result = _configurationProvider.TryGet(key, out var actualValue);
+		var result = configurationProvider.TryGet(key, out var actualValue);
 
 		// assert
-		Assert.True(result);
-		Assert.NotNull(actualValue);
-		Assert.Equal(expectedValue, actualValue);
+		result.Should().BeTrue();
+		actualValue.Should().NotBeNull();
+		actualValue.Should().Be(expectedValue);
 	}
 
 	[Theory]
@@ -74,69 +56,64 @@ public class InMemoryConfigurationProviderTests
 	)
 	{
 		// arrange
-		var options = new Dictionary<string, string>();
-		var value = Guid.NewGuid().ToString("N");
-		// await _configurationProvider.LoadAsync(options, default);
+		var value = Fixture.Create<string>();
+		var configurationProvider = CreateConfigurationProvider();
 
 		// act
-		var oldResult = _configurationProvider.TryGet(key, out var oldValue);
-		_configurationProvider.Set(key, value);
-		var newResult = _configurationProvider.TryGet(key, out var newValue);
+		var oldResult = configurationProvider.TryGet(key, out var oldValue);
+		configurationProvider.Set(key, value);
+		var newResult = configurationProvider.TryGet(key, out var newValue);
 
 		// assert
-		Assert.True(oldResult);
-		Assert.True(newResult);
-		Assert.NotNull(oldValue);
-		Assert.NotNull(newValue);
+		oldResult.Should().BeTrue();
+		newResult.Should().BeTrue();
+		oldValue.Should().NotBeNull();
+		newValue.Should().NotBeNull();
 
-		Assert.NotEqual(oldValue, newValue);
-		Assert.Equal(value, newValue);
+		newValue.Should().NotBe(oldValue);
+		newValue.Should().Be(value);
 	}
 
 	[Fact]
 	public void InMemoryConfigurationProviderTests__Set__WhenNotExistingKeyGiven_ThenValueCreated()
 	{
 		// arrange
-		var options = new Dictionary<string, string>();
-		var key = Guid.NewGuid().ToString("N");
-		var value = Guid.NewGuid().ToString("N");
-		// await _configurationProvider.LoadAsync(options, default);
+		var key = Fixture.Create<string>();
+		var value = Fixture.Create<string>();
+		var configurationProvider = CreateConfigurationProvider();
 
 		// act
-		var oldResult = _configurationProvider.TryGet(key, out var oldValue);
-		_configurationProvider.Set(key, value);
-		var newResult = _configurationProvider.TryGet(key, out var newValue);
+		var oldResult = configurationProvider.TryGet(key, out var oldValue);
+		configurationProvider.Set(key, value);
+		var newResult = configurationProvider.TryGet(key, out var newValue);
 
 		// assert
-		Assert.False(oldResult);
-		Assert.True(newResult);
-		Assert.Null(oldValue);
-		Assert.NotNull(newValue);
+		oldResult.Should().BeFalse();
+		newResult.Should().BeTrue();
+		oldValue.Should().BeNull();
+		newValue.Should().NotBeNull();
 
-		Assert.NotEqual(oldValue, newValue);
-		Assert.Equal(value, newValue);
+		newValue.Should().NotBe(oldValue);
+		newValue.Should().Be(value);
 	}
 
 	[Fact]
-	public async Task InMemoryConfigurationProviderTests__LoadAsync__WhenConfigurationLoadedWithDifferentOptions_ThenNewConfigKeyExists()
+	public void InMemoryConfigurationProviderTests__LoadAsync__WhenConfigurationLoadedWithDifferentOptions_ThenNewConfigKeyExists()
 	{
 		// arrange
-		var key = Guid.NewGuid().ToString("N");
-		var value = Guid.NewGuid().ToString("N");
-		var options = new Dictionary<string, string>
-		{
-			{ key, value }
-		};
-		await _configurationProvider.LoadAsync(options, default);
+		var key = Fixture.Create<string>();
+		var value = Fixture.Create<string>();
+		var options = new Dictionary<string, string> { { key, value } };
+		var configurationProvider = CreateConfigurationProvider(options);
 
 		// act
-		var result = _configurationProvider.TryGet(key, out var optionValue);
+		var result = configurationProvider.TryGet(key, out var optionValue);
 
 		// assert
-		Assert.True(result);
-		Assert.NotNull(optionValue);
+		result.Should().BeTrue();
+		optionValue.Should().NotBeNull();
 
-		Assert.Equal(value, optionValue);
+		optionValue.Should().Be(value);
 	}
 
 	[Theory]
@@ -145,20 +122,38 @@ public class InMemoryConfigurationProviderTests
 	[InlineData("property-3")]
 	[InlineData("property-4")]
 	[InlineData("property-5")]
-	public async Task InMemoryConfigurationProviderTests__LoadAsync__WhenConfigurationLoadedWithDifferentOptions_ThenOldConfigKeyNotExists(string key)
+	public void InMemoryConfigurationProviderTests__LoadAsync__WhenConfigurationLoadedWithDifferentOptions_ThenOldConfigKeyNotExists(string lookupKey)
 	{
 		// arrange
-		var options = new Dictionary<string, string>
-		{
-			{ Guid.NewGuid().ToString("N"), Guid.NewGuid().ToString("N") }
-		};
-		await _configurationProvider.LoadAsync(options, default);
+		var key = Fixture.Create<string>();
+		var value = Fixture.Create<string>();
+		var options = new Dictionary<string, string> { { key, value } };
+		var configurationProvider = CreateConfigurationProvider(options);
 
 		// act
-		var result = _configurationProvider.TryGet(key, out var optionValue);
+		var result = configurationProvider.TryGet(lookupKey, out var optionValue);
 
 		// assert
-		Assert.False(result);
-		Assert.Null(optionValue);
+		result.Should().BeFalse();
+		optionValue.Should().BeNull();
+	}
+
+	private IConfigurationProvider CreateConfigurationProvider(IDictionary<string, string>? options = null)
+	{
+		options ??= CreateDefaultOptions();
+		return new InMemoryConfigurationProvider(options);
+	}
+
+	private IDictionary<string, string> CreateDefaultOptions()
+	{
+		var configuration = new ConcurrentDictionary<string, string>();
+
+		configuration.TryAdd("property-1", "value-1");
+		configuration.TryAdd("property-2", "value-2");
+		configuration.TryAdd("property-3", "value-3");
+		configuration.TryAdd("property-4", "value-4");
+		configuration.TryAdd("property-5", "value-5");
+
+		return configuration;
 	}
 }

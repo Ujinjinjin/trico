@@ -5,12 +5,13 @@ namespace Comar.Configuration.Providers;
 /// <summary> Long-term configuration provider storing options as environment variables </summary>
 public class EnvironmentVariableConfigurationProvider : IConfigurationProvider
 {
-	private string _prefix = string.Empty;
-	private readonly IDictionary<string, string?> _options;
+	private string _prefix;
+	private readonly IDictionary<string, string> _options;
 
 	public EnvironmentVariableConfigurationProvider()
 	{
-		_options = new ConcurrentDictionary<string, string?>();
+		_prefix = string.Empty;
+		_options = new ConcurrentDictionary<string, string>();
 	}
 
 	/// <inheritdoc />
@@ -41,7 +42,7 @@ public class EnvironmentVariableConfigurationProvider : IConfigurationProvider
 	}
 
 	/// <inheritdoc />
-	public void Set(string key, string? value)
+	public void Set(string key, string value)
 	{
 		if (_options.ContainsKey(key))
 		{

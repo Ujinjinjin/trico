@@ -5,11 +5,11 @@ namespace Comar.Configuration.Providers;
 /// <summary> Short-term configuration provider storing options in memory </summary>
 internal sealed class InMemoryConfigurationProvider : IConfigurationProvider
 {
-	private readonly IDictionary<string, string?> _options;
+	private readonly IDictionary<string, string> _options;
 
-	public InMemoryConfigurationProvider(IDictionary<string, string?>? options)
+	public InMemoryConfigurationProvider(IDictionary<string, string>? options)
 	{
-		_options = options ?? new ConcurrentDictionary<string, string?>();
+		_options = options ?? new ConcurrentDictionary<string, string>();
 	}
 
 	/// <inheritdoc />
@@ -40,7 +40,7 @@ internal sealed class InMemoryConfigurationProvider : IConfigurationProvider
 	}
 
 	/// <inheritdoc />
-	public void Set(string key, string? value)
+	public void Set(string key, string value)
 	{
 		if (_options.ContainsKey(key))
 		{
