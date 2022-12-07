@@ -5,7 +5,7 @@ internal sealed class Configuration : IConfiguration
 {
 	private readonly IReadOnlyList<IConfigurationProvider> _providers;
 
-	public Configuration(IReadOnlyList<IConfigurationProvider> providers)
+	internal Configuration(IReadOnlyList<IConfigurationProvider> providers)
 	{
 		_providers = providers ?? throw new ArgumentNullException(nameof(providers));
 	}

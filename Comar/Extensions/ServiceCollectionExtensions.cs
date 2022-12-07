@@ -49,7 +49,7 @@ public static class ServiceCollectionExtensions
 		IDictionary<string, string?>? options = default
 	)
 	{
-		sc.AddScoped<IConfigurationProvider>(x => new InMemoryConfigurationProvider(options));
+		sc.AddScoped<IConfigurationProvider>(_ => new InMemoryConfigurationProvider(options));
 
 		return sc;
 	}
