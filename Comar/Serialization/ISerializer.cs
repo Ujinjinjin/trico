@@ -7,7 +7,7 @@ public interface ISerializer
 	/// <param name="contents">Serialized object</param>
 	/// <typeparam name="T">Type of the data</typeparam>
 	/// <returns>Object deserialized from given string</returns>
-	T? Deserialize<T>(string contents);
+	T Deserialize<T>(string contents);
 
 	/// <summary> Serialize given data to string </summary>
 	/// <param name="data">Data to serialize</param>

@@ -6,6 +6,17 @@ namespace Comar.Tests.Serialization;
 public class JsonSerializerTests : UnitTestBase
 {
 	[Fact]
+	public void JsonSerializerTests__Serialize__WhenNullGiven_ThenExceptionThrown()
+	{
+		// Arrange
+		var jsonSerializer = new JsonSerializer();
+		var action = () => jsonSerializer.Serialize<TestStruct?>(null);
+
+		// Act & Assert
+		action.Should().Throw<SerializationException>();
+	}
+
+	[Fact]
 	public void JsonSerializerTests__Serialize__WhenValidObjectGiven_ThenObjectSerialized()
 	{
 		// Arrange

@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Dynamic;
+using System.Runtime.Serialization;
 using System.Text;
 using YamlDotNet.Core;
 
@@ -137,7 +138,7 @@ public sealed class FileConfigurationProvider : IConfigurationProvider
 		{
 			obj = serializer.Deserialize<object>(fileContents);
 		}
-		catch (JsonSerializationException exception)
+		catch (SerializationException exception)
 		{
 			throw new FileLoadException("config file wasn't loaded correctly", exception);
 		}

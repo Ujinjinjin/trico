@@ -5,10 +5,9 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace Comar.Serialization;
 
 /// <summary> Wrapper around YAML serializer </summary>
-internal sealed class YamlSerializer : ISerializer
+internal sealed class YamlSerializer : SerializerBase
 {
-	/// <inheritdoc />
-	public T Deserialize<T>(string contents)
+	protected override T DeserializeObject<T>(string contents) where T : default
 	{
 		var serializer = new DeserializerBuilder()
 			.WithNamingConvention(HyphenatedNamingConvention.Instance)
@@ -19,17 +18,12 @@ internal sealed class YamlSerializer : ISerializer
 	}
 
 	/// <inheritdoc />
-	public string Serialize<T>(T data)
+	protected override string SerializeObject<T>(T data)
 	{
 		var serializer = new SerializerBuilder()
 			.WithNamingConvention(HyphenatedNamingConvention.Instance)
 			.ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitNull)
 			.Build();
-
-		if (data is null)
-		{
-			return string.Empty;
-		}
 
 		return serializer.Serialize(data).ToUnixEol();
 	}
