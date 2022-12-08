@@ -1,6 +1,5 @@
-﻿using Comar.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Comar.Containers;
+using Comar.Serialization;
 using System.Dynamic;
 using System.Runtime.Serialization;
 using System.Text;
@@ -11,11 +10,12 @@ namespace Comar.Configuration.Providers;
 public sealed class FileConfigurationProvider : IConfigurationProvider
 {
 	private readonly ISerializerFactory _serializerFactory;
-	private JObject? _jObj;
+	private JsonObject _jObj;
 	private string? _filepath;
 
 	public FileConfigurationProvider(ISerializerFactory serializerFactory)
 	{
+		_jObj = new JsonObject();
 		_serializerFactory = serializerFactory ?? throw new ArgumentNullException(nameof(serializerFactory));
 	}
 
@@ -42,76 +42,13 @@ public sealed class FileConfigurationProvider : IConfigurationProvider
 	/// <inheritdoc />
 	public bool TryGet(string key, out string? value)
 	{
-		var token = _jObj?.SelectToken(key);
-		if (token is null)
-		{
-			value = default;
-			return false;
-		}
-
-		value = token.ToString();
-		return true;
+		return _jObj.TryGet(key, out value);
 	}
 
 	/// <inheritdoc />
 	public void Set(string key, string value)
 	{
-		_jObj ??= new JObject();
-
-		var jToken = SelectToken(_jObj, key.Split('.'), 0);
-
-		switch (jToken.Type)
-		{
-			case JTokenType.Property:
-				if (jToken is JProperty jProperty)
-				{
-					jProperty.Value = value;
-				}
-				break;
-			case JTokenType.String:
-				if (jToken is JValue jValue)
-				{
-					jValue.Value = value;
-				}
-				break;
-			default:
-				throw new InvalidCastException($"node type {jToken.Type} is not supported yet");
-		}
-	}
-
-	private JToken SelectToken(JToken jNode, IReadOnlyList<string> keyFragments, int index)
-	{
-		if (index == keyFragments.Count)
-		{
-			return jNode;
-		}
-
-		JToken? jToken = null;
-		foreach (var t in jNode.SelectTokens(keyFragments[index]))
-		{
-			if (jToken is not null)
-			{
-				throw new JsonException("path returned multiple tokens.");
-			}
-
-			jToken = t;
-		}
-
-		if (jToken is null)
-		{
-			if (index + 1 == keyFragments.Count)
-			{
-				((JObject)jNode).Add(new JProperty(keyFragments[index], string.Empty));
-			}
-			else
-			{
-				((JObject)jNode).Add(keyFragments[index], new JObject());
-			}
-
-			return SelectToken(jNode, keyFragments, index);
-		}
-
-		return SelectToken(jToken, keyFragments, index + 1);
+		_jObj.Set(key, value);
 	}
 
 	/// <inheritdoc />
@@ -142,7 +79,7 @@ public sealed class FileConfigurationProvider : IConfigurationProvider
 			throw new FileLoadException("config file wasn't loaded correctly", exception);
 		}
 
-		_jObj = JObject.FromObject(obj);
+		_jObj = new JsonObject(obj);
 		_filepath = filepath;
 	}
 
