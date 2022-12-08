@@ -1,4 +1,5 @@
 using Newtonsoft.Json.Linq;
+using System.Text.Json;
 
 namespace Comar.Containers;
 
@@ -28,10 +29,15 @@ internal class JsonObject
 
 	public bool TryGet(string key, out string? value)
 	{
+		value = default;
+		if (string.IsNullOrWhiteSpace(key))
+		{
+			return false;
+		}
+
 		var token = _jObj.SelectToken(key);
 		if (token is null)
 		{
-			value = default;
 			return false;
 		}
 
@@ -41,6 +47,16 @@ internal class JsonObject
 
 	public void Set(string key, string value)
 	{
+		if (string.IsNullOrWhiteSpace(key))
+		{
+			throw new ArgumentNullException(nameof(key));
+		}
+
+		if (string.IsNullOrWhiteSpace(value))
+		{
+			throw new ArgumentNullException(nameof(value));
+		}
+
 		var jToken = SelectToken(_jObj, key.Split('.'), 0);
 
 		switch (jToken.Type)
@@ -76,7 +92,7 @@ internal class JsonObject
 		{
 			if (jToken is not null)
 			{
-				throw new SystemException("path returned multiple tokens.");
+				throw new JsonException("path returned multiple tokens.");
 			}
 
 			jToken = t;
@@ -84,6 +100,11 @@ internal class JsonObject
 
 		if (jToken is null)
 		{
+			if (jNode is JValue)
+			{
+				throw new JsonException("given key already contains plain value");
+			}
+
 			if (index + 1 == keyFragments.Count)
 			{
 				((JObject)jNode).Add(new JProperty(keyFragments[index], string.Empty));
