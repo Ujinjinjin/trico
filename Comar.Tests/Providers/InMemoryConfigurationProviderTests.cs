@@ -28,6 +28,7 @@ public class InMemoryConfigurationProviderTests : UnitTestBase
 	[InlineData("property-3", "value-3")]
 	[InlineData("property-4", "value-4")]
 	[InlineData("property-5", "value-5")]
+	[InlineData("section-2.property-6", "value-6")]
 	public void InMemoryConfigurationProviderTests__TryGet__WhenExistingKeyGiven_ThenConfigReturned(
 		string key,
 		string expectedValue
@@ -51,6 +52,7 @@ public class InMemoryConfigurationProviderTests : UnitTestBase
 	[InlineData("property-3")]
 	[InlineData("property-4")]
 	[InlineData("property-5")]
+	[InlineData("section-2.property-6")]
 	public void InMemoryConfigurationProviderTests__Set__WhenExistingKeyGiven_ThenValueUpdated(
 		string key
 	)
@@ -122,6 +124,7 @@ public class InMemoryConfigurationProviderTests : UnitTestBase
 	[InlineData("property-3")]
 	[InlineData("property-4")]
 	[InlineData("property-5")]
+	[InlineData("section-2.property-6")]
 	public void InMemoryConfigurationProviderTests__LoadAsync__WhenConfigurationLoadedWithDifferentOptions_ThenOldConfigKeyNotExists(string lookupKey)
 	{
 		// arrange
@@ -153,6 +156,7 @@ public class InMemoryConfigurationProviderTests : UnitTestBase
 		configuration.TryAdd("property-3", "value-3");
 		configuration.TryAdd("property-4", "value-4");
 		configuration.TryAdd("property-5", "value-5");
+		configuration.TryAdd("section-2.property-6", "value-6");
 
 		return configuration;
 	}
