@@ -7,7 +7,7 @@ using System.Text;
 namespace Comar.Configuration.Providers;
 
 /// <summary> Long-term configuration provider storing options in a file </summary>
-public sealed class FileConfigurationProvider : IConfigurationProvider
+internal sealed class FileConfigurationProvider : IConfigurationProvider
 {
 	private readonly ISerializerFactory _serializerFactory;
 	private JsonObject _jObj;
