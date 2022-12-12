@@ -1,15 +1,18 @@
-﻿using System.Collections.Concurrent;
+﻿using Comar.Adapters;
+using System.Collections.Concurrent;
 
 namespace Comar.Configuration.Providers;
 
 /// <summary> Long-term configuration provider storing options as environment variables </summary>
-public class EnvironmentVariableConfigurationProvider : IConfigurationProvider
+internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationProvider
 {
+	private readonly IEnvironment _environment;
 	private string _prefix;
 	private readonly IDictionary<string, string> _options;
 
-	public EnvironmentVariableConfigurationProvider()
+	public EnvironmentVariableConfigurationProvider(IEnvironment environment)
 	{
+		_environment = environment ?? throw new ArgumentNullException(nameof(environment));
 		_prefix = string.Empty;
 		_options = new ConcurrentDictionary<string, string>();
 	}
@@ -70,7 +73,7 @@ public class EnvironmentVariableConfigurationProvider : IConfigurationProvider
 			_prefix = prefix;
 		}
 
-		var envVars = Environment.GetEnvironmentVariables() as Dictionary<string, string> ?? new Dictionary<string, string>();
+		var envVars = _environment.GetEnvironmentVariables();
 
 		foreach (var envVar in envVars)
 		{
@@ -94,7 +97,7 @@ public class EnvironmentVariableConfigurationProvider : IConfigurationProvider
 	{
 		foreach (var option in _options)
 		{
-			Environment.SetEnvironmentVariable($"{_prefix}{option.Key}", option.Value);
+			_environment.SetEnvironmentVariable($"{_prefix}{option.Key}", option.Value);
 		}
 
 		return Task.CompletedTask;

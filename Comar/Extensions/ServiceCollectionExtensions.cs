@@ -1,4 +1,5 @@
-﻿using Comar.Configuration;
+﻿using Comar.Adapters;
+using Comar.Configuration;
 using Comar.Configuration.Providers;
 using Comar.Serialization;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,9 +14,10 @@ public static class ServiceCollectionExtensions
 	/// <returns>Original service collection</returns>
 	public static IServiceCollection AddConfiguration(this IServiceCollection sc)
 	{
-		sc.AddScoped<ISerializerFactory, SerializerFactory>();
-		sc.AddScoped<IConfigurationBuilder, ConfigurationBuilder>();
-		sc.AddScoped<IConfiguration, ConfigurationProxy>();
+		sc.AddSingleton<IEnvironment, Adapters.Environment>();
+		sc.AddSingleton<ISerializerFactory, SerializerFactory>();
+		sc.AddSingleton<IConfigurationBuilder, ConfigurationBuilder>();
+		sc.AddSingleton<IConfiguration, ConfigurationProxy>();
 
 		return sc;
 	}
@@ -25,7 +27,7 @@ public static class ServiceCollectionExtensions
 	/// <returns>Original service collection</returns>
 	public static IServiceCollection AddEnvironmentVariableProvider(this IServiceCollection sc)
 	{
-		sc.AddScoped<IConfigurationProvider, EnvironmentVariableConfigurationProvider>();
+		sc.AddSingleton<IConfigurationProvider, EnvironmentVariableConfigurationProvider>();
 
 		return sc;
 	}
@@ -35,7 +37,7 @@ public static class ServiceCollectionExtensions
 	/// <returns>Original service collection</returns>
 	public static IServiceCollection AddFileProvider(this IServiceCollection sc)
 	{
-		sc.AddScoped<IConfigurationProvider, FileConfigurationProvider>();
+		sc.AddSingleton<IConfigurationProvider, FileConfigurationProvider>();
 
 		return sc;
 	}
@@ -49,7 +51,7 @@ public static class ServiceCollectionExtensions
 		IDictionary<string, string>? options = default
 	)
 	{
-		sc.AddScoped<IConfigurationProvider>(_ => new InMemoryConfigurationProvider(options));
+		sc.AddSingleton<IConfigurationProvider>(_ => new InMemoryConfigurationProvider(options));
 
 		return sc;
 	}
