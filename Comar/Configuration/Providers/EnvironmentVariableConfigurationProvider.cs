@@ -8,20 +8,20 @@ internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationP
 {
 	private readonly IEnvironment _environment;
 	private string _prefix;
-	private readonly IDictionary<string, string> _options;
+	private readonly IDictionary<string, string> _configurations;
 
 	public EnvironmentVariableConfigurationProvider(IEnvironment environment)
 	{
 		_environment = environment ?? throw new ArgumentNullException(nameof(environment));
 		_prefix = string.Empty;
-		_options = new ConcurrentDictionary<string, string>();
+		_configurations = new ConcurrentDictionary<string, string>();
 	}
 
 	/// <inheritdoc />
 	public void Dispose()
 	{
 		((IConfigurationProvider)this).Dump();
-		_options.Clear();
+		_configurations.Clear();
 	}
 
 	/// <inheritdoc />
@@ -41,19 +41,19 @@ internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationP
 	/// <inheritdoc />
 	public bool TryGet(string key, out string? value)
 	{
-		return _options.TryGetValue(key, out value);
+		return _configurations.TryGetValue(key, out value);
 	}
 
 	/// <inheritdoc />
 	public void Set(string key, string value)
 	{
-		if (_options.ContainsKey(key))
+		if (_configurations.ContainsKey(key))
 		{
-			_options[key] = value;
+			_configurations[key] = value;
 		}
 		else
 		{
-			_options.Add(key, value);
+			_configurations.Add(key, value);
 		}
 	}
 
@@ -66,7 +66,7 @@ internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationP
 	/// <inheritdoc />
 	Task IConfigurationProvider.LoadAsync(IDictionary<string, string> options, CancellationToken ct)
 	{
-		_options.Clear();
+		_configurations.Clear();
 
 		if (options.TryGetValue("prefix", out var prefix) && !string.IsNullOrWhiteSpace(prefix))
 		{
@@ -75,11 +75,11 @@ internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationP
 
 		var envVars = _environment.GetEnvironmentVariables();
 
-		foreach (var envVar in envVars)
+		foreach (var (variable, value) in envVars)
 		{
-			if (string.IsNullOrWhiteSpace(_prefix) || envVar.Value.StartsWith(_prefix))
+			if (string.IsNullOrWhiteSpace(_prefix) || variable.StartsWith(_prefix))
 			{
-				_options.Add(envVar.Key.Remove(0, _prefix.Length), envVar.Value);
+				_configurations.Add(variable.Remove(0, _prefix.Length), value);
 			}
 		}
 
@@ -95,7 +95,7 @@ internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationP
 	/// <inheritdoc />
 	Task IConfigurationProvider.DumpAsync(CancellationToken ct)
 	{
-		foreach (var option in _options)
+		foreach (var option in _configurations)
 		{
 			_environment.SetEnvironmentVariable($"{_prefix}{option.Key}", option.Value);
 		}
