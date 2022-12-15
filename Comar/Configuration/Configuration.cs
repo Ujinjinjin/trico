@@ -10,16 +10,6 @@ internal sealed class Configuration : IConfiguration
 		_providers = providers ?? throw new ArgumentNullException(nameof(providers));
 	}
 
-	/// <inheritdoc />
-	public void Dispose()
-	{
-		foreach (var provider in _providers)
-		{
-			provider.Dispose();
-		}
-	}
-
-	/// <inheritdoc />
 	public string? this[string key]
 	{
 		get => GetConfiguration(key);

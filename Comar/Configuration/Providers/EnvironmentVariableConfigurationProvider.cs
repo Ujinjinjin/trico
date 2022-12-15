@@ -18,27 +18,6 @@ internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationP
 	}
 
 	/// <inheritdoc />
-	public void Dispose()
-	{
-		((IConfigurationProvider)this).Dump();
-		_configurations.Clear();
-	}
-
-	/// <inheritdoc />
-	public ValueTask DisposeAsync()
-	{
-		try
-		{
-			Dispose();
-			return default;
-		}
-		catch (Exception exc)
-		{
-			return ValueTask.FromException(exc);
-		}
-	}
-
-	/// <inheritdoc />
 	public bool TryGet(string key, out string? value)
 	{
 		return _configurations.TryGetValue(key, out value);
