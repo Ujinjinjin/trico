@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Comar.Tests.Providers;
 
-public class FileConfigurationProviderTests
+public class FileConfigurationProviderTests : UnitTestBase
 {
 	private readonly IConfigurationProvider _configurationProvider;
 
@@ -28,20 +28,22 @@ public class FileConfigurationProviderTests
 	public async Task FileConfigurationProviderTests__LoadAsync__WhenFilepathKeyNotGiven_ThenExceptionThrown()
 	{
 		// arrange
-		var options = new Dictionary<string, string>();
+		var options = CreateEmptyOptions();
+		var action = async () => await _configurationProvider.LoadAsync(options, default);
 
 		// act & assert
-		await Assert.ThrowsAsync<KeyNotFoundException>(async () => await _configurationProvider.LoadAsync(options, default));
+		await action.Should().ThrowAsync<KeyNotFoundException>();
 	}
 
 	[Fact]
 	public void FileConfigurationProviderTests__Load__WhenFilepathKeyNotGiven_ThenExceptionThrown()
 	{
 		// arrange
-		var options = new Dictionary<string, string>();
+		var options = CreateEmptyOptions();
+		var action = () => _configurationProvider.Load(options);
 
 		// act & assert
-		Assert.Throws<KeyNotFoundException>(() => _configurationProvider.Load(options));
+		action.Should().Throw<KeyNotFoundException>();
 	}
 
 	[Theory]
@@ -51,13 +53,11 @@ public class FileConfigurationProviderTests
 	public async Task FileConfigurationProviderTests__LoadAsync__WhenFilepathWithInvalidContentGiven_ThenExceptionThrown(string filepath)
 	{
 		// arrange
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
+		var options = CreateValidOptions(filepath);
+		var action = async () => await _configurationProvider.LoadAsync(options, default);
 
 		// act & assert
-		await Assert.ThrowsAsync<FileLoadException>(async () => await _configurationProvider.LoadAsync(options, default));
+		await action.Should().ThrowAsync<FileLoadException>();
 	}
 
 	[Theory]
@@ -67,13 +67,11 @@ public class FileConfigurationProviderTests
 	public void FileConfigurationProviderTests__Load__WhenFilepathWithInvalidContentGiven_ThenExceptionThrown(string filepath)
 	{
 		// arrange
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
+		var options = CreateValidOptions(filepath);
+		var action = () => _configurationProvider.Load(options);
 
 		// act & assert
-		Assert.Throws<FileLoadException>(() => _configurationProvider.Load(options));
+		action.Should().Throw<FileLoadException>();
 	}
 
 	[Theory]
@@ -83,13 +81,11 @@ public class FileConfigurationProviderTests
 	public async Task FileConfigurationProviderTests__LoadAsync__WhenFilepathWithEmptyContentGiven_ThenExceptionThrown(string filepath)
 	{
 		// arrange
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
+		var options = CreateValidOptions(filepath);
+		var action = async () => await _configurationProvider.LoadAsync(options, default);
 
 		// act & assert
-		await Assert.ThrowsAsync<FileLoadException>(async () => await _configurationProvider.LoadAsync(options, default));
+		await action.Should().ThrowAsync<FileLoadException>();
 	}
 
 	[Theory]
@@ -99,13 +95,11 @@ public class FileConfigurationProviderTests
 	public void FileConfigurationProviderTests__Load__WhenFilepathWithEmptyContentGiven_ThenExceptionThrown(string filepath)
 	{
 		// arrange
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
+		var options = CreateValidOptions(filepath);
+		var action = () => _configurationProvider.Load(options);
 
 		// act & asser
-		Assert.Throws<FileLoadException>(() => _configurationProvider.Load(options));
+		action.Should().Throw<FileLoadException>();
 	}
 
 	[Theory]
@@ -115,13 +109,11 @@ public class FileConfigurationProviderTests
 	public async Task FileConfigurationProviderTests__LoadAsync__WhenFilepathWithCorrectContentGiven_ThenConfigLoaded(string filepath)
 	{
 		// arrange
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
+		var options = CreateValidOptions(filepath);
+		var action = async () => await _configurationProvider.LoadAsync(options, default);
 
 		// act & assert
-		await _configurationProvider.LoadAsync(options, default);
+		await action.Should().NotThrowAsync();
 	}
 
 	[Theory]
@@ -131,27 +123,29 @@ public class FileConfigurationProviderTests
 	public void FileConfigurationProviderTests__Load__WhenFilepathWithCorrectContentGiven_ThenConfigLoaded(string filepath)
 	{
 		// arrange
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
+		var options = CreateValidOptions(filepath);
+		var action = () => _configurationProvider.Load(options);
 
 		// act & assert
-		_configurationProvider.Load(options);
+		action.Should().NotThrow();
 	}
 
 	[Fact]
 	public async Task FileConfigurationProviderTests__DumpAsync__WhenDumpedBeforeLoading_ThenExceptionThrown()
 	{
+		// arrange
+		var action = async () => await _configurationProvider.DumpAsync(default);
 		// act & assert
-		await Assert.ThrowsAsync<FileLoadException>(async () => await _configurationProvider.DumpAsync(default));
+		await action.Should().ThrowAsync<FileLoadException>();
 	}
 
 	[Fact]
 	public void FileConfigurationProviderTests__Dump__WhenDumpedBeforeLoading_ThenExceptionThrown()
 	{
+		// arrange
+		var action = () => _configurationProvider.Dump();
 		// act & assert
-		Assert.Throws<FileLoadException>(() => _configurationProvider.Dump());
+		action.Should().Throw<FileLoadException>();
 	}
 
 	[Theory]
@@ -161,22 +155,22 @@ public class FileConfigurationProviderTests
 	public async Task FileConfigurationProviderTests__DumpAsync__WhenDumpedAfterChangingConfigs_ThenChangedConfigsLoadedNextTime(string filepath)
 	{
 		// arrange
-		var newValue = Guid.NewGuid().ToString("N");
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
+		var newKey = Fixture.Create<string>();
+		var newValue = Fixture.Create<string>();
+		var options = CreateValidOptions(filepath);
 
 		await _configurationProvider.LoadAsync(options, default);
-		_configurationProvider.Set("new-property", newValue);
+		_configurationProvider.Set(newKey, newValue);
 
 		// act
 		await _configurationProvider.DumpAsync(default);
 		_configurationProvider.Load(options);
 
+		var result = _configurationProvider.TryGet(newKey, out var value);
+
 		// assert
-		Assert.True(_configurationProvider.TryGet("new-property", out var value));
-		Assert.Equal(newValue, value);
+		result.Should().BeTrue();
+		value.Should().Be(newValue);
 	}
 
 	[Theory]
@@ -186,22 +180,22 @@ public class FileConfigurationProviderTests
 	public void FileConfigurationProviderTests__Dump__WhenDumpedAfterChangingConfigs_ThenChangedConfigsLoadedNextTime(string filepath)
 	{
 		// arrange
-		var newValue = Guid.NewGuid().ToString("N");
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
+		var newKey = Fixture.Create<string>();
+		var newValue = Fixture.Create<string>();
+		var options = CreateValidOptions(filepath);
 
 		_configurationProvider.Load(options);
-		_configurationProvider.Set("new-property", newValue);
+		_configurationProvider.Set(newKey, newValue);
 
 		// act
 		_configurationProvider.Dump();
 		_configurationProvider.Load(options);
 
+		var result = _configurationProvider.TryGet(newKey, out var value);
+
 		// assert
-		Assert.True(_configurationProvider.TryGet("new-property", out var value));
-		Assert.Equal(newValue, value);
+		result.Should().BeTrue();
+		value.Should().Be(newValue);
 	}
 
 	[Theory]
@@ -211,19 +205,16 @@ public class FileConfigurationProviderTests
 	public async Task FileConfigurationProviderTests__TryGet__WhenNotExistingKeyGiven_ThenConfigNotReturned(string filepath)
 	{
 		// arrange
-		var key = Guid.NewGuid().ToString("N");
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
+		var key = Fixture.Create<string>();
+		var options = CreateValidOptions(filepath);
 		await _configurationProvider.LoadAsync(options, default);
 
 		// act
 		var result = _configurationProvider.TryGet(key, out var value);
 
 		// assert
-		Assert.False(result);
-		Assert.Null(value);
+		result.Should().BeFalse();
+		value.Should().BeNull();
 	}
 
 	[Theory]
@@ -243,19 +234,16 @@ public class FileConfigurationProviderTests
 	)
 	{
 		// arrange
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
+		var options = CreateValidOptions(filepath);
 		await _configurationProvider.LoadAsync(options, default);
 
 		// act
 		var result = _configurationProvider.TryGet(key, out var actualValue);
 
 		// assert
-		Assert.True(result);
-		Assert.NotNull(actualValue);
-		Assert.Equal(expectedValue, actualValue);
+		result.Should().BeTrue();
+		actualValue.Should().NotBeNull();
+		actualValue.Should().Be(expectedValue);
 	}
 
 	[Theory]
@@ -274,11 +262,8 @@ public class FileConfigurationProviderTests
 	)
 	{
 		// arrange
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
-		var value = Guid.NewGuid().ToString("N");
+		var options = CreateValidOptions(filepath);
+		var value = Fixture.Create<string>();
 		await _configurationProvider.LoadAsync(options, default);
 
 		// act
@@ -287,13 +272,13 @@ public class FileConfigurationProviderTests
 		var newResult = _configurationProvider.TryGet(key, out var newValue);
 
 		// assert
-		Assert.True(oldResult);
-		Assert.True(newResult);
-		Assert.NotNull(oldValue);
-		Assert.NotNull(newValue);
+		oldResult.Should().BeTrue();
+		newResult.Should().BeTrue();
+		oldValue.Should().NotBeNull();
+		newValue.Should().NotBeNull();
 
-		Assert.NotEqual(oldValue, newValue);
-		Assert.Equal(value, newValue);
+		newValue.Should().NotBe(oldValue);
+		newValue.Should().Be(value);
 	}
 
 	[Theory]
@@ -305,12 +290,9 @@ public class FileConfigurationProviderTests
 	)
 	{
 		// arrange
-		var options = new Dictionary<string, string>
-		{
-			{ "config-filepath", filepath },
-		};
-		var key = Guid.NewGuid().ToString("N");
-		var value = Guid.NewGuid().ToString("N");
+		var options = CreateValidOptions(filepath);
+		var key = Fixture.Create<string>();
+		var value = Fixture.Create<string>();
 		await _configurationProvider.LoadAsync(options, default);
 
 		// act
@@ -319,12 +301,27 @@ public class FileConfigurationProviderTests
 		var newResult = _configurationProvider.TryGet(key, out var newValue);
 
 		// assert
-		Assert.False(oldResult);
-		Assert.True(newResult);
-		Assert.Null(oldValue);
-		Assert.NotNull(newValue);
+		oldResult.Should().BeFalse();
+		newResult.Should().BeTrue();
+		oldValue.Should().BeNull();
+		newValue.Should().NotBeNull();
 
-		Assert.NotEqual(oldValue, newValue);
-		Assert.Equal(value, newValue);
+		newValue.Should().NotBe(oldValue);
+		newValue.Should().Be(value);
+	}
+
+	private IDictionary<string, string> CreateEmptyOptions()
+	{
+		var options = new Dictionary<string, string>();
+		return options;
+	}
+
+	private IDictionary<string, string> CreateValidOptions(string filepath)
+	{
+		var options = new Dictionary<string, string>
+		{
+			{ "config-filepath", filepath },
+		};
+		return options;
 	}
 }
