@@ -22,12 +22,6 @@ internal sealed class ConfigurationProxy : IConfiguration
 	}
 
 	/// <inheritdoc />
-	public void Dispose()
-	{
-		Configuration.Dispose();
-	}
-
-	/// <inheritdoc />
 	public string? this[string key]
 	{
 		get => Configuration[key];

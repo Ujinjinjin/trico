@@ -1,7 +1,7 @@
 ﻿namespace Comar.Configuration;
 
 /// <summary> Configuration </summary>
-public interface IConfiguration : IDisposable
+public interface IConfiguration
 {
 	/// <summary> Configuration accessor by key </summary>
 	/// <param name="key">Configuration key</param>

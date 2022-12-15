@@ -20,26 +20,6 @@ internal sealed class FileConfigurationProvider : IConfigurationProvider
 	}
 
 	/// <inheritdoc />
-	public void Dispose()
-	{
-		((IConfigurationProvider)this).Dump();
-	}
-
-	/// <inheritdoc />
-	public ValueTask DisposeAsync()
-	{
-		try
-		{
-			Dispose();
-			return default;
-		}
-		catch (Exception exc)
-		{
-			return ValueTask.FromException(exc);
-		}
-	}
-
-	/// <inheritdoc />
 	public bool TryGet(string key, out string? value)
 	{
 		return _jObj.TryGet(key, out value);

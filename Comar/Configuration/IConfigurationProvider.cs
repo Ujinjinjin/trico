@@ -1,7 +1,7 @@
 ﻿namespace Comar.Configuration;
 
 /// <summary> Configuration provider </summary>
-public interface IConfigurationProvider : IDisposable, IAsyncDisposable
+public interface IConfigurationProvider
 {
 	/// <summary> Try to get value by its key </summary>
 	/// <param name="key">Configuration key</param>
