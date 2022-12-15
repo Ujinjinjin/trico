@@ -3,7 +3,7 @@ using System.Collections;
 namespace Comar.Adapters;
 
 /// <inheritdoc />
-internal class Environment : IEnvironment
+internal sealed class Environment : IEnvironment
 {
 	/// <inheritdoc />
 	public bool TryGetEnvironmentVariable(string variable, out string? value)
