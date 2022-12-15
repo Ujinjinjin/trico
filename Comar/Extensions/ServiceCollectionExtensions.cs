@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
 	public static IServiceCollection AddConfiguration(this IServiceCollection sc)
 	{
 		sc.AddSingleton<IEnvironment, Adapters.Environment>();
+		sc.AddSingleton<IFileIo, FileIo>();
 		sc.AddSingleton<ISerializerFactory, SerializerFactory>();
 		sc.AddSingleton<IConfigurationBuilder, ConfigurationBuilder>();
 		sc.AddSingleton<IConfiguration, ConfigurationProxy>();

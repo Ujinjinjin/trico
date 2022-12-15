@@ -1,4 +1,5 @@
-﻿using Comar.Containers;
+﻿using Comar.Adapters;
+using Comar.Containers;
 using Comar.Serialization;
 using System.Dynamic;
 using System.Runtime.Serialization;
@@ -10,13 +11,18 @@ namespace Comar.Configuration.Providers;
 internal sealed class FileConfigurationProvider : IConfigurationProvider
 {
 	private readonly ISerializerFactory _serializerFactory;
+	private readonly IFileIo _fileIo;
 	private JsonObject _jObj;
 	private string? _filepath;
 
-	public FileConfigurationProvider(ISerializerFactory serializerFactory)
+	public FileConfigurationProvider(
+		ISerializerFactory serializerFactory,
+		IFileIo fileIo
+	)
 	{
 		_jObj = new JsonObject();
 		_serializerFactory = serializerFactory ?? throw new ArgumentNullException(nameof(serializerFactory));
+		_fileIo = fileIo ?? throw new ArgumentNullException(nameof(fileIo));
 	}
 
 	/// <inheritdoc />
@@ -47,7 +53,7 @@ internal sealed class FileConfigurationProvider : IConfigurationProvider
 
 		var serializer = _serializerFactory.CreateSerializer(filepath);
 
-		var fileContents = await File.ReadAllTextAsync(filepath, ct);
+		var fileContents = await _fileIo.ReadAsync(filepath, ct);
 
 		object? obj;
 		try
@@ -84,7 +90,6 @@ internal sealed class FileConfigurationProvider : IConfigurationProvider
 		var stringBuilder = new StringBuilder();
 		stringBuilder.Append(serializer.Serialize(obj));
 
-		await using var streamWriter = new StreamWriter(_filepath);
-		await streamWriter.WriteAsync(stringBuilder, ct);
+		await _fileIo.WriteAsync(_filepath, stringBuilder, ct);
 	}
 }
