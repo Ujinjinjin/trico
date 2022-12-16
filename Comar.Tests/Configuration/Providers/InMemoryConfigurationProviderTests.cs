@@ -3,7 +3,7 @@ using Comar.Configuration.Providers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Comar.Tests.Providers;
+namespace Comar.Tests.Configuration.Providers;
 
 public class InMemoryConfigurationProviderTests : UnitTestBase
 {

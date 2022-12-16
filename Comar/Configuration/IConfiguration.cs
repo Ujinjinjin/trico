@@ -15,4 +15,11 @@ public interface IConfiguration
 	/// <param name="options">Options that must be passed to configuration providers</param>
 	/// <param name="ct">Cancellation token</param>
 	Task LoadAsync(IDictionary<string, string> options, CancellationToken ct);
+
+	/// <summary> Dump current configuration state </summary>
+	void Dump();
+
+	/// <summary> Asynchronously dump current configuration state </summary>
+	/// <param name="ct">Cancellation token</param>
+	Task DumpAsync(CancellationToken ct);
 }

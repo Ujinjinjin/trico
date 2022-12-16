@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Comar.Tests.Providers;
+namespace Comar.Tests.Configuration.Providers;
 
 public class EnvironmentVariableConfigurationProviderTests : UnitTestBase
 {
