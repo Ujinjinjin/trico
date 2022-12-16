@@ -1,4 +1,6 @@
-﻿namespace Comar.Configuration;
+﻿using System.Data;
+
+namespace Comar.Configuration;
 
 /// <inheritdoc />
 internal sealed class Configuration : IConfiguration
@@ -19,10 +21,7 @@ internal sealed class Configuration : IConfiguration
 	/// <inheritdoc />
 	public void Load(IDictionary<string, string> options)
 	{
-		foreach (var provider in _providers)
-		{
-			provider.Load(options);
-		}
+		LoadAsync(options, default).GetAwaiter().GetResult();
 	}
 
 	/// <inheritdoc />
@@ -31,6 +30,21 @@ internal sealed class Configuration : IConfiguration
 		foreach (var provider in _providers)
 		{
 			await provider.LoadAsync(options, ct);
+		}
+	}
+
+	/// <inheritdoc />
+	public void Dump()
+	{
+		DumpAsync(default).GetAwaiter().GetResult();
+	}
+
+	/// <inheritdoc />
+	public async Task DumpAsync(CancellationToken ct)
+	{
+		foreach (var provider in _providers)
+		{
+			await provider.DumpAsync(ct);
 		}
 	}
 
@@ -55,6 +69,11 @@ internal sealed class Configuration : IConfiguration
 	/// <param name="value">Value to set</param>
 	private void SetConfiguration(string key, string? value)
 	{
+		if (string.IsNullOrWhiteSpace(value))
+		{
+			throw new NoNullAllowedException(nameof(value));
+		}
+
 		foreach (var provider in _providers)
 		{
 			provider.Set(key, value);

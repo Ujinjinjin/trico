@@ -39,4 +39,16 @@ internal sealed class ConfigurationProxy : IConfiguration
 	{
 		await Configuration.LoadAsync(options, ct);
 	}
+
+	/// <inheritdoc />
+	public void Dump()
+	{
+		Configuration.Dump();
+	}
+
+	/// <inheritdoc />
+	public async Task DumpAsync(CancellationToken ct)
+	{
+		await Configuration.DumpAsync(ct);
+	}
 }
