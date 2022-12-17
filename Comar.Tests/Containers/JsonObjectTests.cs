@@ -9,6 +9,20 @@ namespace Comar.Tests.Containers;
 public class JsonObjectTests : UnitTestBase
 {
 	[Fact]
+	public void JsonObjectTests_ctor__WhenNullObjectGiven_ThenEmptyJsonObjectCreated()
+	{
+		// arrange
+		var jsonObject = new JsonObject(null);
+		var expected = "{}";
+
+		// act
+		var ser = JsonSerializer.Serialize(jsonObject);
+
+		// assert
+		ser.Should().Be(expected);
+	}
+
+	[Fact]
 	public void JsonObjectTests_TryGet__WhenEmptyJsonObjectGiven_ThenValueNotReturned()
 	{
 		// arrange

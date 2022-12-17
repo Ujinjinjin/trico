@@ -53,16 +53,20 @@ internal sealed class FileConfigurationProvider : IConfigurationProvider
 
 		var serializer = _serializerFactory.CreateSerializer(filepath);
 
-		var fileContents = await _fileIo.ReadAsync(filepath, ct);
-
 		object? obj;
 		try
 		{
+			var fileContents = await _fileIo.ReadAsync(filepath, ct);
+
 			obj = serializer.Deserialize<object>(fileContents);
 		}
-		catch (SerializationException exception)
+		catch (SerializationException e)
 		{
-			throw new FileLoadException("config file wasn't loaded correctly", exception);
+			throw new FileLoadException("config file wasn't loaded correctly", e);
+		}
+		catch (FileNotFoundException)
+		{
+			obj = default;
 		}
 
 		_jObj = new JsonObject(obj);

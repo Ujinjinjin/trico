@@ -1,5 +1,6 @@
 ﻿using Comar.Configuration;
 using Comar.Configuration.Providers;
+using Comar.Constants;
 using Comar.Tests.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -44,6 +45,22 @@ public class FileConfigurationProviderTests : UnitTestBase
 
 		// act & assert
 		action.Should().Throw<KeyNotFoundException>();
+	}
+
+	[Theory]
+	[InlineData(FilenameExtension.Json)]
+	[InlineData(FilenameExtension.Yaml)]
+	[InlineData(FilenameExtension.Yml)]
+	public async Task FileConfigurationProviderTests_LoadAsync__WhenNotExistingFilepathGiven_ThenProviderLoaded(string extension)
+	{
+		// arrange
+		var filename = Fixture.Create<string>();
+		var filepath = $"./InputData/{filename}.{extension}";
+		var options = CreateValidOptions(filepath);
+		var action = async () => await _configurationProvider.LoadAsync(options, default);
+
+		// act & assert
+		await action.Should().NotThrowAsync();
 	}
 
 	[Theory]
