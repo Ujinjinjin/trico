@@ -83,9 +83,9 @@ public class ConfigurationTests : UnitTestBase
 		return providers;
 	}
 
-	internal class Holder
+	private class Holder
 	{
-		private Dictionary<string, string> _collection;
+		private readonly Dictionary<string, string> _collection;
 
 		public Holder()
 		{
