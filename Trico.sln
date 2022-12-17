@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Meta", "Meta", "{7943CE4E-4
 		.gitignore = .gitignore
 		LICENSE = LICENSE
 		README.md = README.md
+		Makefile = Makefile
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trico.Playground", "Trico.Playground\Trico.Playground.csproj", "{0C343CA2-88F6-4E65-9DB1-0C6BA55FB234}"
