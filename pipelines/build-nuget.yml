@@ -1,0 +1,84 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+      - release/*
+      - feature/*
+      - develop
+  paths:
+    exclude:
+      - Makefile
+      - .editorconfig
+      - Comar.Playground/*
+
+pr:
+  branches:
+    include:
+      - master
+
+variables:
+  - name: 'pkg_name'
+    value: 'Comar'
+  - name: 'solution'
+    value: 'Comar.sln'
+  - name: 'project'
+    value: 'Comar/Comar.csproj'
+  - name: 'buildConfiguration'
+    value: 'Release'
+  - name: 'major'
+    value: 1
+  - name: 'minor'
+    value: 1
+  - name: 'patch'
+    value: $[counter('comar', 1)]
+
+jobs:
+  - job: Linux_x64
+    pool:
+      vmImage: 'ubuntu-latest'
+    variables:
+      buildPlatform: 'x64'
+
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'use python 3.8'
+        inputs:
+          versionSpec: '3.8.*'
+          addToPath: true
+          architecture: 'x64'
+
+      - task: CmdLine@2
+        displayName: 'get build tools'
+        inputs:
+          script: 'git clone https://github.com/Ujinjinjin/build-tools.git --branch v1.0.0 --single-branch'
+
+      - task: PythonScript@0
+        displayName: 'set version to env'
+        inputs:
+          scriptSource: 'filePath'
+          scriptPath: 'build-tools/src/version.py'
+          arguments: '--major $(major) --minor $(minor) --patch $(patch) --branch $(Build.SourceBranchName)'
+
+      - template: build-template.yml
+        parameters:
+          solution: $(solution)
+          buildPlatform: $(buildPlatform)
+          buildConfiguration: $(buildConfiguration)
+
+      - task: DotNetCoreCLI@2
+        displayName: 'create nuget package'
+        inputs:
+          command: 'pack'
+          configuration: '$(buildConfiguration)'
+          packagesToPack: '$(project)'
+          packDirectory: '$(Build.ArtifactStagingDirectory)/nuget'
+          versioningScheme: 'byEnvVar'
+          versionEnvVar: 'pkg_version'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'publish build artifacts'
+        inputs:
+          PathToPublish: '$(Build.ArtifactStagingDirectory)/nuget'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
