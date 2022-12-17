@@ -1,0 +1,8 @@
+node:
+  property: value
+  node:
+    property: value
+property: value
+array:
+  - item_1
+  - item_2
