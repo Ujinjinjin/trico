@@ -10,7 +10,7 @@ trigger:
     exclude:
       - Makefile
       - .editorconfig
-      - Comar.Playground/*
+      - Trico.Playground/*
 
 pr:
   branches:
@@ -19,11 +19,11 @@ pr:
 
 variables:
   - name: 'pkg_name'
-    value: 'Comar'
+    value: 'Trico'
   - name: 'solution'
-    value: 'Comar.sln'
+    value: 'Trico.sln'
   - name: 'project'
-    value: 'Comar/Comar.csproj'
+    value: 'Trico/Trico.csproj'
   - name: 'buildConfiguration'
     value: 'Release'
   - name: 'major'
@@ -31,7 +31,7 @@ variables:
   - name: 'minor'
     value: 1
   - name: 'patch'
-    value: $[counter('comar', 1)]
+    value: $[counter('trico', 1)]
 
 jobs:
   - job: Linux_x64

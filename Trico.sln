@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trico", "Trico\Trico.csproj", "{D3DC4E8B-A260-49E3-805C-DAC0DCD0A5CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trico.Tests", "Trico.Tests\Trico.Tests.csproj", "{DD047906-1110-42C4-911A-DAD758F3DA94}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Meta", "Meta", "{7943CE4E-49FD-4E15-ACBE-5E0DCD7F3DE4}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trico.Playground", "Trico.Playground\Trico.Playground.csproj", "{0C343CA2-88F6-4E65-9DB1-0C6BA55FB234}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipelines", "Pipelines", "{DCE26086-DBCC-4EEB-905F-16042D5B459E}"
+	ProjectSection(SolutionItems) = preProject
+		pipelines\build-nuget.yml = pipelines\build-nuget.yml
+		pipelines\build-template.yml = pipelines\build-template.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3DC4E8B-A260-49E3-805C-DAC0DCD0A5CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3DC4E8B-A260-49E3-805C-DAC0DCD0A5CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3DC4E8B-A260-49E3-805C-DAC0DCD0A5CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3DC4E8B-A260-49E3-805C-DAC0DCD0A5CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD047906-1110-42C4-911A-DAD758F3DA94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD047906-1110-42C4-911A-DAD758F3DA94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD047906-1110-42C4-911A-DAD758F3DA94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD047906-1110-42C4-911A-DAD758F3DA94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C343CA2-88F6-4E65-9DB1-0C6BA55FB234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C343CA2-88F6-4E65-9DB1-0C6BA55FB234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C343CA2-88F6-4E65-9DB1-0C6BA55FB234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C343CA2-88F6-4E65-9DB1-0C6BA55FB234}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

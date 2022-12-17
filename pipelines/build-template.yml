@@ -30,4 +30,4 @@ steps:
     displayName: 'run unit tests'
     inputs:
       command: 'test'
-      projects: 'Comar.Tests/Comar.Tests.csproj'
+      projects: 'Trico.Tests/Trico.Tests.csproj'
