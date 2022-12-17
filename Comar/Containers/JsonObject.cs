@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Comar.Containers;
 
-internal class JsonObject
+internal sealed class JsonObject
 {
 	private readonly JObject _jObj;
 
@@ -12,8 +12,8 @@ internal class JsonObject
 	{
 	}
 
-	internal JsonObject(object obj)
-		: this(JObject.FromObject(obj))
+	internal JsonObject(object? obj)
+		: this(JObject.FromObject(obj ?? new object()))
 	{
 	}
 
