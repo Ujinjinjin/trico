@@ -19,6 +19,19 @@ internal sealed class Configuration : IConfiguration
 	}
 
 	/// <inheritdoc />
+	public string Get(string key)
+	{
+		return this[key] ?? throw new KeyNotFoundException();
+	}
+
+	/// <inheritdoc />
+	public bool TryGet(string key, out string? value)
+	{
+		value = this[key];
+		return value is not null;
+	}
+
+	/// <inheritdoc />
 	public void Load(IDictionary<string, string> options)
 	{
 		LoadAsync(options, default).GetAwaiter().GetResult();

@@ -7,6 +7,16 @@ public interface IConfiguration
 	/// <param name="key">Configuration key</param>
 	string? this[string key] { get; set; }
 
+	/// <summary> Get required configuration </summary>
+	/// <param name="key">Configuration key</param>
+	/// <exception cref="KeyNotFoundException">Given key not found in any of configuration providers</exception>
+	string Get(string key);
+
+	/// <summary> Get configuration </summary>
+	/// <param name="key">Configuration key</param>
+	/// <param name="value">Configuration value</param>
+	bool TryGet(string key, out string? value);
+
 	/// <summary> Load configuration from providers </summary>
 	/// <param name="options">Options that must be passed to configuration providers</param>
 	void Load(IDictionary<string, string> options);

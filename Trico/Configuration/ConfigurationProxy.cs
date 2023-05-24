@@ -29,6 +29,18 @@ internal sealed class ConfigurationProxy : IConfiguration
 	}
 
 	/// <inheritdoc />
+	public string Get(string key)
+	{
+		return Configuration.Get(key);
+	}
+
+	/// <inheritdoc />
+	public bool TryGet(string key, out string? value)
+	{
+		return Configuration.TryGet(key, out value);
+	}
+
+	/// <inheritdoc />
 	public void Load(IDictionary<string, string> options)
 	{
 		Configuration.Load(options);
