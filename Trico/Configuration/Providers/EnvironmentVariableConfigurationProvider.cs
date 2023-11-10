@@ -1,5 +1,6 @@
 ﻿using Trico.Adapters;
 using System.Collections.Concurrent;
+using Trico.Converters;
 
 namespace Trico.Configuration.Providers;
 
@@ -7,12 +8,17 @@ namespace Trico.Configuration.Providers;
 internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationProvider
 {
 	private readonly IEnvironment _environment;
+	private readonly IEnvVarNameConverter _envVarNameConverter;
 	private string _prefix;
 	private readonly IDictionary<string, string> _configurations;
 
-	public EnvironmentVariableConfigurationProvider(IEnvironment environment)
+	public EnvironmentVariableConfigurationProvider(
+		IEnvironment environment,
+		IEnvVarNameConverter envVarNameConverter
+	)
 	{
 		_environment = environment ?? throw new ArgumentNullException(nameof(environment));
+		_envVarNameConverter = envVarNameConverter ?? throw new ArgumentNullException(nameof(envVarNameConverter));
 		_prefix = string.Empty;
 		_configurations = new ConcurrentDictionary<string, string>();
 	}
@@ -26,14 +32,7 @@ internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationP
 	/// <inheritdoc />
 	public void Set(string key, string value)
 	{
-		if (_configurations.ContainsKey(key))
-		{
-			_configurations[key] = value;
-		}
-		else
-		{
-			_configurations.Add(key, value);
-		}
+		_configurations[key] = value;
 	}
 
 	/// <inheritdoc />
@@ -53,13 +52,15 @@ internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationP
 		}
 
 		var envVars = _environment.GetEnvironmentVariables();
-
 		foreach (var (variable, value) in envVars)
 		{
-			if (string.IsNullOrWhiteSpace(_prefix) || variable.StartsWith(_prefix))
+			if (!variable.StartsWith(_prefix))
 			{
-				_configurations.Add(variable.Remove(0, _prefix.Length), value);
+				continue;
 			}
+
+			var key = _envVarNameConverter.ToConfigKey(variable, _prefix);
+			_configurations.Add(key, value);
 		}
 
 		return Task.CompletedTask;
@@ -76,7 +77,8 @@ internal sealed class EnvironmentVariableConfigurationProvider : IConfigurationP
 	{
 		foreach (var option in _configurations)
 		{
-			_environment.SetEnvironmentVariable($"{_prefix}{option.Key}", option.Value);
+			var envVarName = _envVarNameConverter.ToEnvVarName(option.Key, _prefix);
+			_environment.SetEnvironmentVariable(envVarName, option.Value);
 		}
 
 		return Task.CompletedTask;

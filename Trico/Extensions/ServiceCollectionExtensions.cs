@@ -3,6 +3,7 @@ using Trico.Configuration;
 using Trico.Configuration.Providers;
 using Trico.Serialization;
 using Microsoft.Extensions.DependencyInjection;
+using Trico.Converters;
 
 namespace Trico.Extensions;
 
@@ -14,11 +15,6 @@ public static class ServiceCollectionExtensions
 	/// <returns>Original service collection</returns>
 	public static IServiceCollection AddConfiguration(this IServiceCollection sc)
 	{
-		// services
-		sc.AddSingleton<IEnvironment, Adapters.Environment>();
-		sc.AddSingleton<IFileIo, FileIo>();
-		sc.AddSingleton<ISerializerFactory, SerializerFactory>();
-
 		// configuration
 		sc.AddSingleton<IConfigurationBuilder, ConfigurationBuilder>();
 		sc.AddSingleton<IConfiguration, ConfigurationProxy>();
@@ -31,6 +27,8 @@ public static class ServiceCollectionExtensions
 	/// <returns>Original service collection</returns>
 	public static IServiceCollection AddEnvironmentVariableProvider(this IServiceCollection sc)
 	{
+		sc.AddSingleton<IEnvironment, Adapters.Environment>();
+		sc.AddSingleton<IEnvVarNameConverter, EnvVarNameConverter>();
 		sc.AddSingleton<IConfigurationProvider, EnvironmentVariableConfigurationProvider>();
 
 		return sc;
@@ -41,6 +39,8 @@ public static class ServiceCollectionExtensions
 	/// <returns>Original service collection</returns>
 	public static IServiceCollection AddFileProvider(this IServiceCollection sc)
 	{
+		sc.AddSingleton<IFileIo, FileIo>();
+		sc.AddSingleton<ISerializerFactory, SerializerFactory>();
 		sc.AddSingleton<IConfigurationProvider, FileConfigurationProvider>();
 
 		return sc;

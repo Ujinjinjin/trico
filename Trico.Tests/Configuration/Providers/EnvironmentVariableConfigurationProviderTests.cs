@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Trico.Converters;
 
 namespace Trico.Tests.Configuration.Providers;
 
@@ -353,7 +354,8 @@ public class EnvironmentVariableConfigurationProviderTests : UnitTestBase
 	private IConfigurationProvider CreateConfigurationProvider(IDictionary<string, string>? variables = null)
 	{
 		var env = CreateConfiguredEnvironmentMock(variables);
-		return new EnvironmentVariableConfigurationProvider(env);
+		var converter = CreateConfiguredEnvVarNameConverterMock();
+		return new EnvironmentVariableConfigurationProvider(env, converter);
 	}
 
 	private IEnvironment CreateConfiguredEnvironmentMock(IDictionary<string, string>? variables = null)
@@ -383,5 +385,27 @@ public class EnvironmentVariableConfigurationProviderTests : UnitTestBase
 		variables.TryAdd("property-6", "value-6");
 
 		return variables;
+	}
+
+	private IEnvVarNameConverter CreateConfiguredEnvVarNameConverterMock()
+	{
+		return new DummyEnvVarNameConverter();
+	}
+
+	private class DummyEnvVarNameConverter : IEnvVarNameConverter
+	{
+		public string ToConfigKey(string envVarName, string? prefix)
+		{
+			return string.IsNullOrWhiteSpace(prefix)
+				? envVarName
+				: envVarName.Remove(0, prefix.Length);
+		}
+
+		public string ToEnvVarName(string configKey, string? prefix)
+		{
+			return string.IsNullOrWhiteSpace(prefix)
+				? configKey
+				: prefix + configKey;
+		}
 	}
 }
